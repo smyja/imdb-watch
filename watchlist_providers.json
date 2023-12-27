@@ -8,7 +8,7 @@
                 "url": "http://www.netflix.com/title/80234304"
             }
         ],
-        "poster_url": "https://images.justwatch.comhttps://images.justwatch.com/poster/207518778/s718/the-queens-gambit.jpg"
+        "poster_url": "https://images.justwatch.com/poster/207518778/s718/the-queens-gambit.jpg"
     },
     {
         "title": "Slumdog Millionaire",
@@ -21,26 +21,12 @@
             },
             {
                 "name": "Unknown",
-                "url": "https://www.directv.com/movies/Slumdog-Millionaire-U3h5a2JrY0FWOXQzajBHY3lQZkRHdz09"
-            },
-            {
-                "name": "Unknown",
-                "url": "https://tv.apple.com/us/movie/slumdog-millionaire/umc.cmc.4z31qtliob8zcfmkqbuf3aka1?playableId=tvs.sbd.9001%3A299469721",
-                "price": "$3.99"
-            },
-            {
-                "name": "Unknown",
-                "url": "https://www.microsoft.com/en-us/p/slumdog-millionaire/8d6kgwzl5r1j",
-                "price": "$3.99"
-            },
-            {
-                "name": "Unknown",
                 "url": "http://www.amctheatres.com/movies/slumdog-millionaire-15277",
                 "price": "$14.99"
             },
             {
                 "name": "Unknown",
-                "url": "https://www.vudu.com/content/movies/details/Slumdog-Millionaire/143596",
+                "url": "https://www.microsoft.com/en-us/p/slumdog-millionaire/8d6kgwzl5r1j",
                 "price": "$3.99"
             },
             {
@@ -50,11 +36,25 @@
             },
             {
                 "name": "Unknown",
+                "url": "https://www.vudu.com/content/movies/details/Slumdog-Millionaire/143596",
+                "price": "$3.99"
+            },
+            {
+                "name": "Unknown",
+                "url": "https://tv.apple.com/us/movie/slumdog-millionaire/umc.cmc.4z31qtliob8zcfmkqbuf3aka1?playableId=tvs.sbd.9001%3A299469721",
+                "price": "$3.99"
+            },
+            {
+                "name": "Unknown",
                 "url": "https://play.google.com/store/movies/details/Slumdog_Millionaire?gl=US&hl=en&id=iPtLeVJmvAg",
                 "price": "$3.99"
+            },
+            {
+                "name": "Unknown",
+                "url": "https://www.directv.com/movies/Slumdog-Millionaire-U3h5a2JrY0FWOXQzajBHY3lQZkRHdz09"
             }
         ],
-        "poster_url": "https://images.justwatch.comhttps://images.justwatch.com/poster/77658791/s718/slumdog-millionaire.jpg"
+        "poster_url": "https://images.justwatch.com/poster/77658791/s718/slumdog-millionaire.jpg"
     },
     {
         "title": "Homecoming: A Film by Beyoncé",
@@ -65,6 +65,6 @@
                 "url": "http://www.netflix.com/title/81013626"
             }
         ],
-        "poster_url": "https://images.justwatch.comhttps://images.justwatch.com/poster/124954164/s718/homecoming-a-film-by-beyonce.jpg"
+        "poster_url": "https://images.justwatch.com/poster/124954164/s718/homecoming-a-film-by-beyonce.jpg"
     }
 ]

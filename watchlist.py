@@ -61,7 +61,7 @@ def main():
 
             providers = [dict(t) for t in {tuple(d.items()) for d in providers}]
 
-            poster_url = f"https://images.justwatch.com{item_data.poster}" if item_data.poster else None
+            poster_url = f"{item_data.poster}" if item_data.poster else None
 
 
             # Add item information to the results list
