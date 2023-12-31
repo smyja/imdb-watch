@@ -101,6 +101,8 @@ async def get_watchlist_providers(file: UploadFile = File(...)):
 @app.post("/upload-csv/")
 async def upload_csv(file: UploadFile = File(...)):
     movies_2023 = []
+    series_2023 = []
+    total_watch_time_hours = 0
 
     reader = csv.DictReader((line.decode() for line in file.file), delimiter=",")
 
@@ -109,23 +111,46 @@ async def upload_csv(file: UploadFile = File(...)):
 
         if date_rated.year == 2023:
             genres = row["Genres"].split(", ") if row["Genres"] else []
+            runtime_mins = int(row["Runtime (mins)"]) if row["Runtime (mins)"] else 0
+            total_watch_time_hours += runtime_mins / 60
 
-            movies_2023.append(
-                MovieData(
-                    imdb_id=row["Const"],
-                    user_rating=int(row["Your Rating"]),
-                    date_rated=date_rated,
-                    title=row["Title"],
-                    genres=genres,
+            if row["Title Type"] == "movie":
+                movies_2023.append(
+                    MovieData(
+                        imdb_id=row["Const"],
+                        user_rating=int(row["Your Rating"]),
+                        date_rated=date_rated,
+                        title=row["Title"],
+                        genres=genres,
+                        runtime_mins=runtime_mins
+                    )
                 )
-            )
+            else:
+                series_2023.append(
+                    MovieData(
+                        imdb_id=row["Const"],
+                        user_rating=int(row["Your Rating"]),
+                        date_rated=date_rated,
+                        title=row["Title"],
+                        genres=genres,
+                        runtime_mins=runtime_mins
+                    )
+                )
 
-    # Perform analysis and generate report
+    total_movies_watched = len(movies_2023)
+    total_series_watched = len(series_2023)
 
-    report = generate_report(movies_2023)
+    # Perform analysis and generate report for movies and series separately
+    movie_report = generate_report(movies_2023)
+    series_report = generate_report(series_2023)
 
-    return report
-
+    return {
+        "movie_report": movie_report,
+        "series_report": series_report,
+        "total_movies_watched": total_movies_watched,
+        "total_series_watched": total_series_watched,
+        "total_watch_time_hours": total_watch_time_hours
+    }
 
 def generate_report(movies: List[MovieData]) -> Report:
     # Calculate total movies watched
