@@ -26,14 +26,10 @@ class MovieData(BaseModel):
 
 
 class Report(BaseModel):
-    total_movies_watched: int
-
+    total_items_watched: int
     average_rating: float
-
     most_watched_genre: str
-
-    highest_rated_movies: List[str]
-
+    highest_rated_items: List[str] = [] 
 
 def get_imdb_watchlist(file_path):
     watchlist = []
@@ -137,51 +133,73 @@ async def upload_csv(file: UploadFile = File(...)):
                     )
                 )
 
-    total_movies_watched = len(movies_2023)
+    total_items_watched = len(movies_2023)
     total_series_watched = len(series_2023)
 
     # Perform analysis and generate report for movies and series separately
     movie_report = generate_report(movies_2023)
     series_report = generate_report(series_2023)
 
-    return {
-        "movie_report": movie_report,
-        "series_report": series_report,
-        "total_movies_watched": total_movies_watched,
+    response = {
+
+        "movie_report": movie_report.dict(),
+
+        "series_report": series_report.dict(),
+
+        "total_movies_watched": total_items_watched,
+
         "total_series_watched": total_series_watched,
+
         "total_watch_time_hours": total_watch_time_hours
+
     }
 
-def generate_report(movies: List[MovieData]) -> Report:
-    # Calculate total movies watched
 
-    total_movies_watched = len(movies)
+    # Exclude the irrelevant field based on the report type
+
+    response["movie_report"].pop("highest_rated_series", None)
+
+    response["series_report"].pop("highest_rated_movies", None)
+
+
+    return response
+
+def generate_report(items: List[MovieData], report_type: str = 'movies') -> Report:
+
+    # Calculate total items watched
+
+    total_items_watched = len(items)
+
 
     # Calculate average rating
 
-    average_rating = mean(movie.user_rating for movie in movies)
+    average_rating = mean(item.user_rating for item in items)
+
 
     # Find the most-watched genre
 
-    genre_counter = Counter(genre for movie in movies for genre in movie.genres)
+    genre_counter = Counter(genre for item in items for genre in item.genres)
 
     most_watched_genre = genre_counter.most_common(1)[0][0] if genre_counter else None
 
-    # Find the highest-rated movie(s)
+    highest_rated = sorted(items, key=lambda x: x.user_rating, reverse=True)[:4]
 
-    highest_rated_movies = [
-        movie.title
-        for movie in movies
-        if movie.user_rating == max(movie.user_rating for movie in movies)
-    ]
+    highest_rated_titles = [item.title for item in highest_rated]
+
 
     # Generate a simple report
 
     report = Report(
-        total_movies_watched=total_movies_watched,
+
+        total_items_watched=total_items_watched,
+
         average_rating=average_rating,
+
         most_watched_genre=most_watched_genre,
-        highest_rated_movies=highest_rated_movies,
+
+        highest_rated_items=highest_rated_titles,
+
     )
+
 
     return report
