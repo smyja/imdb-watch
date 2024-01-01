@@ -44,5 +44,5 @@ npm run dev
 
 - [Next.js](https://nextjs.org/)
 - [Mantine](https://mantine.dev/)
-- [JustWatch GraphQL API](https://api.justwatch.com/)
+
 
