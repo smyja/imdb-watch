@@ -1,5 +1,6 @@
 import csv
 from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
 from pydantic import BaseModel
@@ -11,7 +12,14 @@ from statistics import mean
 from simplejustwatchapi.justwatch import search
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+    allow_credentials=True,
+    expose_headers=["Content-Disposition"],
+)
 
 class MovieData(BaseModel):
     imdb_id: str
