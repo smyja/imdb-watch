@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .wrapper {
     position: relative;
     padding-top: rem(180px);
@@ -26,9 +28,7 @@
     color: var(--mantine-color-white);
     margin-bottom: var(--mantine-spacing-xs);
     text-align: center;
-    font-family:
-      Greycliff CF,
-      var(--mantine-font-family);
+    font-family: Roboto;
   
     @media (max-width: $mantine-breakpoint-xs) {
       font-size: rem(28px);

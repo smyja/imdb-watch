@@ -12,6 +12,7 @@
     "@mantine/core": "7.3.2",
     "@mantine/hooks": "7.3.2",
     "@tabler/icons-react": "^2.44.0",
+    "html2canvas": "^1.4.1",
     "next": "14.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
