@@ -12,7 +12,6 @@ import classes from "./BadgeCard.module.css";
 import html2canvas from "html2canvas";
 import { useRef } from "react";
 
-
 type ReportData = {
   movie_report: {
     total_items_watched: number;
@@ -50,7 +49,7 @@ export function BadgeCard({ reportData }: BadgeCardProps) {
         setTimeout(async () => {
           const rect = cardElement.getBoundingClientRect();
           const options = {
-            scale: window.devicePixelRatio,
+            scale: 4,
             useCORS: true, // This can help with loading images from other domains
             letterRendering: true,
             // ... other options you might need
@@ -85,64 +84,64 @@ export function BadgeCard({ reportData }: BadgeCardProps) {
       }
     }
   };
-  const movieTitle = reportData.movie_report.highest_rated_items.join(', ');
+  const badgeData = [
+    {
+      label: "Movies Watched:",
+      value: reportData.total_movies_watched,
+      badgeColor: "black",
+    },
 
-  const seriesTitle = reportData.series_report.highest_rated_items.join(', ');
+    {
+      label: "Series Watched:",
+      value: reportData.total_series_watched,
+      badgeColor: "black",
+    },
 
-  const totalWatchTime = reportData.total_watch_time_hours.toFixed(2);
+    {
+      label: "Total Watch Time:",
+      value: `${reportData.total_watch_time_hours.toFixed(2)} hours`,
+      badgeColor: "pink",
+    },
 
+    {
+      label: "Highest Rated Movies:",
+      value: reportData.movie_report.highest_rated_items.join(", "),
+      badgeColor: "yellow",
+      variant: "filled",
+    },
 
+    {
+      label: "Highest Rated Series:",
+      value: reportData.series_report.highest_rated_items.join(", "),
+      badgeColor: "blue",
+    },
+  ];
 
   return (
     <Card withBorder radius="md" p="md" className={classes.card} ref={cardRef}>
+      <Card.Section className={classes.section} mt="md">
+        {badgeData.map((data, index) => (
+          <Group
+            justify="apart"
+            mt={index === 0 ? "md" : "xs"}
+            key={data.label}
+          >
+            <Badge color={data.badgeColor} variant={data.variant || "filled"}>
+              {data.label}
+            </Badge>
 
-    {/* Card content using reportData */}
-
-    <Card.Section className={classes.section} mt="md">
-
-      <Group justify="apart">
-
-        <Text fz="lg" fw={500}>
-
-          Movies Watched: {reportData.total_movies_watched}
-
-        </Text>
-
-        <Text fz="lg" fw={500}>
-
-          Series Watched: {reportData.total_series_watched}
-
-        </Text>
-
-      </Group>
-
-      <Text fz="sm" mt="xs">
-
-        Total Watch Time: {totalWatchTime} hours
-
-      </Text>
-
-      <Text fz="sm" mt="xs">
-
-        Highest Rated Movies: {movieTitle}
-
-      </Text>
-
-      <Text fz="sm" mt="xs">
-
-        Highest Rated Series: {seriesTitle}
-
-      </Text>
-
-    </Card.Section>
+            <Text fz="lg" fw={500}>
+              {data.value}
+            </Text>
+          </Group>
+        ))}
+      </Card.Section>
 
       <Group mt="xs">
-        <Button radius="md" style={{ flex: 1 }}>
-          Show details
-        </Button>
         <ActionIcon variant="default" radius="md" size={36}>
           <IconHeart className={classes.like} stroke={1.5} />
         </ActionIcon>
+
         <ActionIcon
           variant="default"
           radius="md"
