@@ -46,7 +46,7 @@ export default function IndexPage() {
       <HeroImageBackground onFileChange={handleFileChange} onGenerateReport={handleGenerateReport} />
    
       <Group justify="center" mt={30}>
-        <Box w={370}>
+        <Box w={470}>
           {loading && <Loader />} {/* Show a loader while fetching data */}
           {!loading && reportData && <BadgeCard reportData={reportData} />}
         </Box>

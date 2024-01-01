@@ -1,14 +1,15 @@
 import csv
-from fastapi import FastAPI, File, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-from typing import List
-
-from pydantic import BaseModel
-
+import random
 from collections import Counter
 from datetime import datetime
 from statistics import mean
+from typing import List, Optional
 
+import requests
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from simplejustwatchapi.justwatch import search
 
 app = FastAPI()
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_credentials=True,
     expose_headers=["Content-Disposition"],
 )
+
 
 class MovieData(BaseModel):
     imdb_id: str
@@ -33,11 +35,21 @@ class MovieData(BaseModel):
     genres: List[str]
 
 
+class ItemWithPoster(BaseModel):
+    title: str
+
+    poster_url: str  # Poster URL can be None if not found
+
+
 class Report(BaseModel):
     total_items_watched: int
+
     average_rating: float
+
     most_watched_genre: str
-    highest_rated_items: List[str] = [] 
+
+    highest_rated_items: List[ItemWithPoster]
+
 
 def get_imdb_watchlist(file_path):
     watchlist = []
@@ -53,6 +65,10 @@ def get_imdb_watchlist(file_path):
     # Return 3 items
     return watchlist[:3]
 
+@app.get("/proxy-image/")
+async def proxy_image(url: str):
+    response = requests.get(url, stream=True)
+    return StreamingResponse(response.iter_content(2**20), media_type=response.headers['Content-Type'])
 
 @app.post("/watchlist_providers")
 async def get_watchlist_providers(file: UploadFile = File(...)):
@@ -126,7 +142,7 @@ async def upload_csv(file: UploadFile = File(...)):
                         date_rated=date_rated,
                         title=row["Title"],
                         genres=genres,
-                        runtime_mins=runtime_mins
+                        runtime_mins=runtime_mins,
                     )
                 )
             else:
@@ -137,7 +153,7 @@ async def upload_csv(file: UploadFile = File(...)):
                         date_rated=date_rated,
                         title=row["Title"],
                         genres=genres,
-                        runtime_mins=runtime_mins
+                        runtime_mins=runtime_mins,
                     )
                 )
 
@@ -149,19 +165,12 @@ async def upload_csv(file: UploadFile = File(...)):
     series_report = generate_report(series_2023)
 
     response = {
-
         "movie_report": movie_report.dict(),
-
         "series_report": series_report.dict(),
-
         "total_movies_watched": total_items_watched,
-
         "total_series_watched": total_series_watched,
-
-        "total_watch_time_hours": total_watch_time_hours
-
+        "total_watch_time_hours": total_watch_time_hours,
     }
-
 
     # Exclude the irrelevant field based on the report type
 
@@ -169,20 +178,17 @@ async def upload_csv(file: UploadFile = File(...)):
 
     response["series_report"].pop("highest_rated_movies", None)
 
-
     return response
 
-def generate_report(items: List[MovieData], report_type: str = 'movies') -> Report:
 
+def generate_report(items: List[MovieData], report_type: str = "movies") -> Report:
     # Calculate total items watched
 
     total_items_watched = len(items)
 
-
     # Calculate average rating
 
     average_rating = mean(item.user_rating for item in items)
-
 
     # Find the most-watched genre
 
@@ -192,22 +198,38 @@ def generate_report(items: List[MovieData], report_type: str = 'movies') -> Repo
 
     highest_rated = sorted(items, key=lambda x: x.user_rating, reverse=True)[:4]
 
-    highest_rated_titles = [item.title for item in highest_rated]
+    highest_rated_with_posters = []
+
+    # Shuffle the list of highest-rated items
+    random.shuffle(highest_rated)
+
+    # Select the first three items
+    selected_items = highest_rated[:2]
+
+    for item in selected_items:
+        search_results = search(item.title, "US", "en", 1, True)
+        if search_results:
+            poster_url = search_results[0].poster
+            print(poster_url)
+            backdrops = search_results[0].backdrops
+
+            # Add a check for None before creating the instance
+            if poster_url is not None:
+                highest_rated_with_posters.append(ItemWithPoster(title=item.title, poster_url=poster_url, backdrops=backdrops))
+            else:
+                # Handle the case where poster_url is None
+                print(f"Skipping {item.title} due to missing poster_url")
+
+    # Now, proceed with the rest of your code
 
 
     # Generate a simple report
 
     report = Report(
-
         total_items_watched=total_items_watched,
-
         average_rating=average_rating,
-
         most_watched_genre=most_watched_genre,
-
-        highest_rated_items=highest_rated_titles,
-
+        highest_rated_items=highest_rated_with_posters,
     )
-
 
     return report
