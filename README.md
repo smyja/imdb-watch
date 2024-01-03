@@ -18,7 +18,7 @@ These instructions will get you a copy of the project up and running on your loc
 git clone https://github.com/smyja/imdb-watch.git
 ```
 1. Navigate into the project directory
-cd IMDB-Unwrapped
+cd frontend
 2. Install the dependencies
 ```
 npm install
